@@ -1,0 +1,63 @@
+{
+  "semantics": [
+    {
+      "label": "Imágenes",
+      "field": {
+        "label": "Slide de Imagen",
+        "fields": [
+          {
+            "label": "Slide de Imagen"
+          }
+        ]
+      }
+    },
+    {
+      "label": "Aspect ratio",
+      "description": "Automático significa un aspect ratio fijo determinado automáticamente en base a las imágenes",
+      "options": [
+        {
+          "label": "Automático"
+        },
+        {
+          "label": "Personalizado"
+        },
+        {
+          "label": "No-fijado"
+        }
+      ]
+    },
+    {
+      "label": "Opciones de Aspect Ratio",
+      "fields": [
+        {
+          "label": "Aspect ratio ancho",
+          "description": "Si usas 4 aquí y 3 para el alto, el aspect ratio será de 4:3"
+        },
+        {
+          "label": "Aspect ratio alto",
+          "description": "Si usas 3 aquí y 4 para el ancho, el aspect ratio será de 4:3"
+        }
+      ]
+    },
+    {
+      "label": "Accesibilidad del Slide de Imagenes",
+      "fields": [
+        {
+          "label": "Label for next slide buttons",
+          "default": "Next Image",
+          "description": "This is only used for read-speakers. It won't be displayed."
+        },
+        {
+          "label": "Label for previous slide buttons",
+          "default": "Previous Image",
+          "description": "This is only used for read-speakers. It won't be displayed."
+        },
+        {
+          "label": "Etiqueta para thubnails",
+          "default": "Ir a la imagen %slide",
+          "description": "Esto solo se usara para lectores digitales. No será mostrado. %slide es una variable que será reemplazada con el número de la imagen."
+        }
+      ]
+    }
+  ]
+}

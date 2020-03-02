@@ -1,9 +1,9 @@
 {
-  "title": "Image Slider EAD",
-  "description": "Image Slider",
+  "title": "Slide de Imagenes EAD",
+  "description": "Slider de imagenes para la página principal",
   "majorVersion": 0,
   "minorVersion": 1,
-  "patchVersion": 16,
+  "patchVersion": 32,
   "runnable": 1,
   "author": "Falcon, GonDragon",
   "license": "MIT",

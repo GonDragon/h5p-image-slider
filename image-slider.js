@@ -25,7 +25,8 @@ H5P.ImageSliderEAD = (function ($) {
       aspectRatio: {
         aspectWidth: 4,
         aspectHeight: 3
-      }
+      },
+      rotationTime: 15000
     }, options);
 
     // Keep provided id.
@@ -35,6 +36,7 @@ H5P.ImageSliderEAD = (function ($) {
     this.imageThubnails = [];
     this.imageSlideHolders = [];
     this.determineAspectRatio();
+    this.timeoutHandle = 0;
 
     for (var i = 0; i < this.options.imageSlides.length; i++) {
       this.imageSlides[i] = H5P.newRunnable(this.options.imageSlides[i], this.id, undefined, undefined, {
@@ -73,8 +75,9 @@ H5P.ImageSliderEAD = (function ($) {
           self.$slides.height(self.$slides.width() / self.aspectRatio);
         }
       }
-      self.updateNavButtons();
+      // self.updateNavButtons();
       self.updateProgressBar();
+      self.rotate();
     });
   }
 
@@ -158,7 +161,7 @@ H5P.ImageSliderEAD = (function ($) {
    * Many layout changes are handled on resize.
    */
   C.prototype.enterFullScreen = function() {
-    this.updateNavButtons();
+    // this.updateNavButtons();
     this.updateProgressBar();
   };
 
@@ -171,7 +174,7 @@ H5P.ImageSliderEAD = (function ($) {
     for (var i = 0; i < this.imageSlides.length; i++) {
       this.imageSlides[i].resetAspectRatio();
     }
-    this.updateNavButtons();
+    // this.updateNavButtons();
     this.updateProgressBar();
   };
 
@@ -202,23 +205,23 @@ H5P.ImageSliderEAD = (function ($) {
    */
   C.prototype.attachControls = function() {
     var self = this;
-    this.$leftButton = this.createControlButton(this.options.a11y.prevSlide, 'left');
-    this.$rightButton = this.createControlButton(this.options.a11y.nextSlide, 'right');
-    C.handleButtonClick(this.$leftButton, function () {
-      if (!self.dragging) {
-        self.gotoSlide(self.currentSlideId - 1);
-      }
-    });
+    // this.$leftButton = this.createControlButton(this.options.a11y.prevSlide, 'left');
+    // this.$rightButton = this.createControlButton(this.options.a11y.nextSlide, 'right');
+    // C.handleButtonClick(this.$leftButton, function () {
+    //   if (!self.dragging) {
+    //     self.gotoSlide(self.currentSlideId - 1);
+    //   }
+    // });
 
-    C.handleButtonClick(this.$rightButton, function() {
-      if (!self.dragging) {
-        self.gotoSlide(self.currentSlideId + 1);
-      }
-    });
+    // C.handleButtonClick(this.$rightButton, function() {
+    //   if (!self.dragging) {
+    //     self.gotoSlide(self.currentSlideId + 1);
+    //   }
+    // });
 
-    this.$slidesHolder.append(this.$leftButton);
-    this.$slidesHolder.append(this.$rightButton);
-    this.updateNavButtons();
+    // this.$slidesHolder.append(this.$leftButton);
+    // this.$slidesHolder.append(this.$rightButton);
+    // this.updateNavButtons();
     this.attachProgressBar();
     this.initDragging();
     this.initKeyEvents();
@@ -307,6 +310,7 @@ H5P.ImageSliderEAD = (function ($) {
     if (slideId < 0 || slideId >= this.imageSlideHolders.length) {
       return false;
     }
+    var self = this;
     $('.h5p-image-slider-removing', this.$container).removeClass('.h5p-image-slider-removing');
     var nextSlideDirection = (this.currentSlideId < slideId) ? 'future' : 'past';
     var prevSlideDirection = nextSlideDirection === 'past' ? 'future' : 'past';
@@ -332,7 +336,7 @@ H5P.ImageSliderEAD = (function ($) {
 
     this.$currentSlide = $nextSlide;
 
-    this.updateNavButtons();
+    // this.updateNavButtons();
     this.updateProgressBar();
     return true;
   };
@@ -539,6 +543,29 @@ H5P.ImageSliderEAD = (function ($) {
     }
     this.dragging = false;
     this.dragXMovement = 0;
+  };
+
+  /**
+   * Auto Rotation
+   */
+  C.prototype.rotate = function() {
+    var self = this;
+
+    if (self.timeoutHandle) {
+      if (! self.gotoSlide(self.currentSlideId + 1)) {
+        self.gotoSlide(0);
+      };
+    };
+    
+    self.timeoutHandle = setTimeout(function() {self.rotate()}, self.options.rotationTime);
+  };
+
+  /**
+   * Stop Rotation
+   */
+  C.prototype.stopRotation = function() {
+    var self = this;
+    clearTimeout(self.timeoutHandle);
   };
 
   /**
