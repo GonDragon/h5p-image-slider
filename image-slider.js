@@ -1,6 +1,6 @@
 var H5P = H5P || {};
 
-H5P.ImageSlider = (function ($) {
+H5P.ImageSliderEAD = (function ($) {
   /**
    * Constructor function.
    */
@@ -32,12 +32,19 @@ H5P.ImageSlider = (function ($) {
     this.id = id;
     this.currentSlideId = 0;
     this.imageSlides = [];
+    this.imageThubnails = [];
     this.imageSlideHolders = [];
     this.determineAspectRatio();
 
     for (var i = 0; i < this.options.imageSlides.length; i++) {
       this.imageSlides[i] = H5P.newRunnable(this.options.imageSlides[i], this.id, undefined, undefined, {
         aspectRatio: this.aspectRatio
+      });
+      this.imageThubnails[i] = H5P.newRunnable(this.options.imageSlides[i], this.id, undefined, undefined, {
+        aspectRatio: this.aspectRatio
+      });
+      this.imageThubnails[i].on('loaded', function() {
+        self.trigger('resize');
       });
       this.imageSlides[i].on('loaded', function() {
         self.trigger('resize');
@@ -252,6 +259,13 @@ H5P.ImageSlider = (function ($) {
     if (index === 0) {
       $progressBarElement.addClass('h5p-image-slider-current-progress-element');
     }
+
+    var $progressBarImage = $('<div>', {
+      'class': 'h5p-image-slide-holder'
+    });
+    this.imageThubnails[index].attach($progressBarImage);
+    $progressBarElement.append($progressBarImage);
+
     return $progressBarElement;
   };
 
