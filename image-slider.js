@@ -310,6 +310,7 @@ H5P.ImageSliderEAD = (function ($) {
     if (slideId < 0 || slideId >= this.imageSlideHolders.length) {
       return false;
     }
+    this.resetRotation();
     var self = this;
     $('.h5p-image-slider-removing', this.$container).removeClass('.h5p-image-slider-removing');
     var nextSlideDirection = (this.currentSlideId < slideId) ? 'future' : 'past';
@@ -552,20 +553,23 @@ H5P.ImageSliderEAD = (function ($) {
     var self = this;
 
     if (self.timeoutHandle) {
-      if (! self.gotoSlide(self.currentSlideId + 1)) {
+      if (!self.gotoSlide(self.currentSlideId + 1)) {
         self.gotoSlide(0);
       };
     };
     
-    self.timeoutHandle = setTimeout(function() {self.rotate()}, self.options.rotationTime);
+    this.timeoutHandle = setTimeout(function() {self.rotate()}, self.options.rotationTime);
   };
 
   /**
    * Stop Rotation
    */
-  C.prototype.stopRotation = function() {
-    var self = this;
-    clearTimeout(self.timeoutHandle);
+  C.prototype.resetRotation = function() {
+    if (this.timeoutHandle) {
+      clearTimeout(this.timeoutHandle);
+      this.timeoutHandle = 0;
+    }
+    this.rotate();
   };
 
   /**
