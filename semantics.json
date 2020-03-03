@@ -1,5 +1,29 @@
 [
   {
+    "label": "Configuracion del Slider",
+    "name": "sliderConfig",
+    "type": "group",
+    "fields": [
+      {
+        "label": "Rotacion",
+        "name": "rotate",
+        "type": "boolean",
+        "description": "Activa o desactiva la rotacion automatica de imagenes.",
+        "default": false
+      },
+      {
+        "label": "Tiempo de rotacion",
+        "name": "rotationTime",
+        "type": "number",
+        "description": "Tiempo entre cada rotacion automática. Está en milisegundos.",
+        "min": 1000,
+        "max": 60000,
+        "step": 1000,
+        "default": 15000
+      }
+    ]
+  },
+  {
     "label": "Images",
     "name": "imageSlides",
     "type": "list",
@@ -8,6 +32,13 @@
       "name": "imageSlide",
       "type": "group",
       "fields": [
+        {
+          "type": "text",
+          "name": "link",
+          "label": "Link",
+          "description": "Opcional. Link a donde va a llevar la imagen.",
+          "optional": true
+        },
         {
           "label": "Image Slide",
           "name": "imageSlide",

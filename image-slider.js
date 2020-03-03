@@ -26,7 +26,10 @@ H5P.ImageSliderEAD = (function ($) {
         aspectWidth: 4,
         aspectHeight: 3
       },
-      rotationTime: 15000
+      sliderConfig: {
+        rotate: false,
+        rotationTime: 15000
+      }
     }, options);
 
     // Keep provided id.
@@ -39,10 +42,10 @@ H5P.ImageSliderEAD = (function ($) {
     this.timeoutHandle = 0;
 
     for (var i = 0; i < this.options.imageSlides.length; i++) {
-      this.imageSlides[i] = H5P.newRunnable(this.options.imageSlides[i], this.id, undefined, undefined, {
+      this.imageSlides[i] = H5P.newRunnable(this.options.imageSlides[i].imageSlide, this.id, undefined, undefined, {
         aspectRatio: this.aspectRatio
       });
-      this.imageThubnails[i] = H5P.newRunnable(this.options.imageSlides[i], this.id, undefined, undefined, {
+      this.imageThubnails[i] = H5P.newRunnable(this.options.imageSlides[i].imageSlide, this.id, undefined, undefined, {
         aspectRatio: this.aspectRatio
       });
       this.imageThubnails[i].on('loaded', function() {
@@ -79,8 +82,6 @@ H5P.ImageSliderEAD = (function ($) {
       self.updateProgressBar();
       self.startRotation();
     });
-    
-    self.rotate();
   }
 
   C.prototype = Object.create(H5P.EventDispatcher.prototype);
@@ -98,7 +99,7 @@ H5P.ImageSliderEAD = (function ($) {
       case 'auto':
         var imageRatios = [];
         for (var i = 0; i < this.options.imageSlides.length; i++) {
-          var imageFile = this.options.imageSlides[i].params.image.params.file;
+          var imageFile = this.options.imageSlides[i].imageSlide.params.image.params.file;
           imageRatios[i] = imageFile.width / imageFile.height;
         }
         imageRatios.sort(function (a, b) {
@@ -187,9 +188,17 @@ H5P.ImageSliderEAD = (function ($) {
     // Load next three imageSlides (not all for performance reasons)
     for (var i = this.currentSlideId; i < this.imageSlides.length && i < this.currentSlideId + 3; i++) {
       if (this.imageSlideHolders[i] === false) {
-        this.imageSlideHolders[i] = $('<div>', {
-          'class': 'h5p-image-slide-holder'
-        });
+        // If there is a Link, the holder is an a, else, it's a div
+        if (this.options.imageSlides[i].link) {
+          this.imageSlideHolders[i] = $('<a>', {
+            'class': 'h5p-image-slide-holder h5p-image-slide-link',
+            'href' : this.options.imageSlides[i].link
+          });
+        } else {
+          this.imageSlideHolders[i] = $('<div>', {
+            'class': 'h5p-image-slide-holder'
+          });
+        };
         if (i > 0) {
           this.imageSlideHolders[i].attr('aria-hidden', true);
         }
@@ -340,7 +349,8 @@ H5P.ImageSliderEAD = (function ($) {
 
     // this.updateNavButtons();
     this.updateProgressBar();
-    if (this.timeoutHandle) {
+    
+    if (this.timeoutHandle && this.options.sliderConfig.rotate) {
       clearTimeout(this.timeoutHandle);
       this.timeoutHandle = 0;
       this.rotate();
@@ -567,14 +577,14 @@ H5P.ImageSliderEAD = (function ($) {
       clearTimeout(timeoutHandle);
     };
     
-    this.timeoutHandle = setTimeout(function() {self.rotate()}, self.options.rotationTime);
+    this.timeoutHandle = setTimeout(function() {self.rotate()}, self.options.sliderConfig.rotationTime);
   };
 
   /**
    * Start rotation
    */
   C.prototype.startRotation = function() {
-    if (!this.timeoutHandle) {
+    if ((!this.timeoutHandle) && this.options.sliderConfig.rotate) {
       this.rotate()
     }
   };
