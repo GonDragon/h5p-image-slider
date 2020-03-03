@@ -1,12 +1,29 @@
 {
   "semantics": [
     {
-      "label": "Bilder",
+      "label": "Configuracion del Slider",
+      "fields": [
+        {
+          "label": "Rotacion",
+          "description": "Activa o desactiva la rotacion automatica de imagenes."
+        },
+        {
+          "label": "Tiempo de rotacion",
+          "description": "Tiempo entre cada rotacion automática. Está en milisegundos."
+        }
+      ]
+    },
+    {
+      "label": "Images",
       "field": {
-        "label": "Bilde slide",
+        "label": "Image Slide",
         "fields": [
           {
-            "label": "Bilde slide"
+            "label": "Link",
+            "description": "Opcional. Link a donde va a llevar la imagen."
+          },
+          {
+            "label": "Image Slide"
           }
         ]
       }
@@ -14,6 +31,7 @@
     {
       "label": "Aspect ratio",
       "description": "Automatic means fixed aspect ratio automatically determined based on the images",
+      "default": "auto",
       "options": [
         {
           "label": "Automatic"
@@ -28,6 +46,11 @@
     },
     {
       "label": "Aspect Ratio Settings",
+      "showWhen": {
+        "rules": [
+          {}
+        ]
+      },
       "fields": [
         {
           "label": "Aspect ratio width",
