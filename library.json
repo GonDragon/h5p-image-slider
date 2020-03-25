@@ -3,7 +3,7 @@
   "description": "Slider de imagenes para la página principal",
   "majorVersion": 1,
   "minorVersion": 0,
-  "patchVersion": 4,
+  "patchVersion": 5,
   "runnable": 1,
   "author": "Falcon, GonDragon",
   "license": "MIT",
@@ -12,12 +12,12 @@
   "machineName": "H5P.ImageSliderEAD",
   "preloadedJs": [
     {
-      "path": "image-slider.js"
+      "path": "image-slider-ead.js"
     }
   ],
   "preloadedCss": [
     {
-      "path": "image-slider.css"
+      "path": "image-slider-ead.css"
     }
   ],
   "editorDependencies": [
