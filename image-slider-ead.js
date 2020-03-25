@@ -227,7 +227,7 @@ H5P.ImageSliderEAD = (function($) {
           this.imageSlideHolders[i] = $('<a>', {
             class: 'h5p-image-slide-holder h5p-image-slide-link',
             href: this.options.imageSlides[i].link,
-            traget: '_blank'
+            target: '_blank'
           });
         } else {
           this.imageSlideHolders[i] = $('<div>', {

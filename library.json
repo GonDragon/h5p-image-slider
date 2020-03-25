@@ -3,7 +3,7 @@
   "description": "Slider de imagenes para la página principal",
   "majorVersion": 1,
   "minorVersion": 0,
-  "patchVersion": 5,
+  "patchVersion": 6,
   "runnable": 1,
   "author": "Falcon, GonDragon",
   "license": "MIT",
