@@ -3,14 +3,12 @@
   "description": "Slider de imagenes para la página principal",
   "majorVersion": 1,
   "minorVersion": 0,
-  "patchVersion": 0,
+  "patchVersion": 4,
   "runnable": 1,
   "author": "Falcon, GonDragon",
   "license": "MIT",
   "fullscreen": 1,
-  "embedTypes": [
-    "iframe"
-  ],
+  "embedTypes": ["iframe"],
   "machineName": "H5P.ImageSliderEAD",
   "preloadedJs": [
     {

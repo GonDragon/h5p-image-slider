@@ -1,6 +1,6 @@
 var H5P = H5P || {};
 
-H5P.ImageSliderEAD = (function ($) {
+H5P.ImageSliderEAD = (function($) {
   /**
    * Constructor function.
    */
@@ -10,27 +10,32 @@ H5P.ImageSliderEAD = (function ($) {
 
     H5P.EventDispatcher.call(this);
     // Extend defaults with provided options
-    this.options = $.extend(true, {}, {
-      imageSlides: [
-        {
-          imageSlide: null
+    this.options = $.extend(
+      true,
+      {},
+      {
+        imageSlides: [
+          {
+            imageSlide: null
+          }
+        ],
+        a11y: {
+          nextSlide: 'Next Image',
+          prevSlide: 'Previous Image',
+          gotoSlide: 'Go to image %slide'
+        },
+        aspectRatioMode: 'auto',
+        aspectRatio: {
+          aspectWidth: 4,
+          aspectHeight: 3
+        },
+        sliderConfig: {
+          rotate: false,
+          rotationTime: 15000
         }
-      ],
-      a11y: {
-        nextSlide: 'Next Image',
-        prevSlide: 'Previous Image',
-        gotoSlide: 'Go to image %slide'
       },
-      aspectRatioMode: 'auto',
-      aspectRatio: {
-        aspectWidth: 4,
-        aspectHeight: 3
-      },
-      sliderConfig: {
-        rotate: false,
-        rotationTime: 15000
-      }
-    }, options);
+      options
+    );
 
     // Keep provided id.
     this.id = id;
@@ -42,12 +47,24 @@ H5P.ImageSliderEAD = (function ($) {
     this.timeoutHandle = 0;
 
     for (var i = 0; i < this.options.imageSlides.length; i++) {
-      this.imageSlides[i] = H5P.newRunnable(this.options.imageSlides[i].imageSlide, this.id, undefined, undefined, {
-        aspectRatio: this.aspectRatio
-      });
-      this.imageThubnails[i] = H5P.newRunnable(this.options.imageSlides[i].imageSlide, this.id, undefined, undefined, {
-        aspectRatio: this.aspectRatio
-      });
+      this.imageSlides[i] = H5P.newRunnable(
+        this.options.imageSlides[i].imageSlide,
+        this.id,
+        undefined,
+        undefined,
+        {
+          aspectRatio: this.aspectRatio
+        }
+      );
+      this.imageThubnails[i] = H5P.newRunnable(
+        this.options.imageSlides[i].imageSlide,
+        this.id,
+        undefined,
+        undefined,
+        {
+          aspectRatio: this.aspectRatio
+        }
+      );
       this.imageThubnails[i].on('loaded', function() {
         self.trigger('resize');
       });
@@ -60,20 +77,23 @@ H5P.ImageSliderEAD = (function ($) {
     this.on('enterFullScreen', function() {
       self.enterFullScreen();
     });
-    this.on('exitFullScreen', function(){
+    this.on('exitFullScreen', function() {
       self.exitFullScreen();
     });
 
     this.on('resize', function() {
-      var fullScreenOn = self.$container.hasClass('h5p-fullscreen') || self.$container.hasClass('h5p-semi-fullscreen');
+      var fullScreenOn =
+        self.$container.hasClass('h5p-fullscreen') ||
+        self.$container.hasClass('h5p-semi-fullscreen');
       if (fullScreenOn) {
         self.$slides.css('height', '');
-        var newAspectRatio = window.innerWidth / (window.innerHeight - self.$progressBar.outerHeight());
+        var newAspectRatio =
+          window.innerWidth /
+          (window.innerHeight - self.$progressBar.outerHeight());
         for (var i = 0; i < self.imageSlides.length; i++) {
           self.imageSlides[i].setAspectRatio(newAspectRatio);
         }
-      }
-      else {
+      } else {
         if (self.aspectRatio && self.$slides) {
           self.$slides.height(self.$slides.width() / self.aspectRatio);
         }
@@ -92,17 +112,18 @@ H5P.ImageSliderEAD = (function ($) {
    */
   C.prototype.determineAspectRatio = function() {
     // Set aspectRatio to default
-    this.aspectRatio = 4/3;
+    this.aspectRatio = 4 / 3;
 
     // Try to identify aspectRatio according to settings
     switch (this.options.aspectRatioMode) {
       case 'auto':
         var imageRatios = [];
         for (var i = 0; i < this.options.imageSlides.length; i++) {
-          var imageFile = this.options.imageSlides[i].imageSlide.params.image.params.file;
+          var imageFile = this.options.imageSlides[i].imageSlide.params.image
+            .params.file;
           imageRatios[i] = imageFile.width / imageFile.height;
         }
-        imageRatios.sort(function (a, b) {
+        imageRatios.sort(function(a, b) {
           return a - b;
         });
         // Get the median image ratio
@@ -110,8 +131,13 @@ H5P.ImageSliderEAD = (function ($) {
         break;
 
       case 'custom':
-        if (this.options.aspectRatio.aspectWidth && this.options.aspectRatio.aspectHeight) {
-          this.aspectRatio = this.options.aspectRatio.aspectWidth / this.options.aspectRatio.aspectHeight;
+        if (
+          this.options.aspectRatio.aspectWidth &&
+          this.options.aspectRatio.aspectHeight
+        ) {
+          this.aspectRatio =
+            this.options.aspectRatio.aspectWidth /
+            this.options.aspectRatio.aspectHeight;
         }
         break;
 
@@ -127,11 +153,13 @@ H5P.ImageSliderEAD = (function ($) {
    *
    * @param {jQuery} $container
    */
-  C.prototype.attach = function ($container) {
+  C.prototype.attach = function($container) {
     this.$container = $container;
     // Set class on container to identify it as a greeting card
     // container.  Allows for styling later.
-    $container.addClass("h5p-image-slider").addClass('h5p-image-slider-using-mouse');
+    $container
+      .addClass('h5p-image-slider')
+      .addClass('h5p-image-slider-using-mouse');
 
     $container.bind('keydown', function(e) {
       var keyboardNavKeys = [32, 13, 9];
@@ -153,7 +181,9 @@ H5P.ImageSliderEAD = (function ($) {
 
     this.loadImageSlides();
 
-    this.$currentSlide = this.imageSlideHolders[0].addClass('h5p-image-slider-current');
+    this.$currentSlide = this.imageSlideHolders[0].addClass(
+      'h5p-image-slider-current'
+    );
 
     this.attachControls();
   };
@@ -186,19 +216,24 @@ H5P.ImageSliderEAD = (function ($) {
    */
   C.prototype.loadImageSlides = function() {
     // Load next three imageSlides (not all for performance reasons)
-    for (var i = this.currentSlideId; i < this.imageSlides.length && i < this.currentSlideId + 3; i++) {
+    for (
+      var i = this.currentSlideId;
+      i < this.imageSlides.length && i < this.currentSlideId + 3;
+      i++
+    ) {
       if (this.imageSlideHolders[i] === false) {
         // If there is a Link, the holder is an a, else, it's a div
         if (this.options.imageSlides[i].link) {
           this.imageSlideHolders[i] = $('<a>', {
-            'class': 'h5p-image-slide-holder h5p-image-slide-link',
-            'href' : this.options.imageSlides[i].link
+            class: 'h5p-image-slide-holder h5p-image-slide-link',
+            href: this.options.imageSlides[i].link,
+            traget: '_blank'
           });
         } else {
           this.imageSlideHolders[i] = $('<div>', {
-            'class': 'h5p-image-slide-holder'
+            class: 'h5p-image-slide-holder'
           });
-        };
+        }
         if (i > 0) {
           this.imageSlideHolders[i].attr('aria-hidden', true);
         }
@@ -262,8 +297,8 @@ H5P.ImageSliderEAD = (function ($) {
     var $progressBarElement = $('<li>', {
       class: 'h5p-image-slider-progress-element',
       role: 'button',
-      "aria-label": self.options.a11y.gotoSlide.replace('%slide', index + 1),
-      tabindex: 0,
+      'aria-label': self.options.a11y.gotoSlide.replace('%slide', index + 1),
+      tabindex: 0
     });
 
     C.handleButtonClick($progressBarElement, function() {
@@ -275,7 +310,7 @@ H5P.ImageSliderEAD = (function ($) {
     }
 
     var $progressBarImage = $('<div>', {
-      'class': 'h5p-image-slide-holder'
+      class: 'h5p-image-slide-holder'
     });
     this.imageThubnails[index].attach($progressBarImage);
     $progressBarElement.append($progressBarImage);
@@ -292,19 +327,19 @@ H5P.ImageSliderEAD = (function ($) {
    */
   C.prototype.createControlButton = function(text, dir) {
     var $controlButton = $('<div>', {
-      class: 'h5p-image-slider-button ' + 'h5p-image-slider-' + dir + '-button',
+      class: 'h5p-image-slider-button ' + 'h5p-image-slider-' + dir + '-button'
     });
 
     var $controlBg = $('<div>', {
       class: 'h5p-image-slider-button-background'
     });
-     $controlButton.append($controlBg);
+    $controlButton.append($controlBg);
 
     var $controlText = $('<div>', {
       class: 'h5p-image-slider-button-text',
       'aria-label': text,
-      'role': 'button',
-      'tabindex': 0
+      role: 'button',
+      tabindex: 0
     });
     $controlButton.append($controlText);
 
@@ -322,24 +357,28 @@ H5P.ImageSliderEAD = (function ($) {
       return false;
     }
     var self = this;
-    $('.h5p-image-slider-removing', this.$container).removeClass('.h5p-image-slider-removing');
-    var nextSlideDirection = (this.currentSlideId < slideId) ? 'future' : 'past';
+    $('.h5p-image-slider-removing', this.$container).removeClass(
+      '.h5p-image-slider-removing'
+    );
+    var nextSlideDirection = this.currentSlideId < slideId ? 'future' : 'past';
     var prevSlideDirection = nextSlideDirection === 'past' ? 'future' : 'past';
     this.currentSlideId = slideId;
     this.loadImageSlides();
     var $prevSlide = this.$currentSlide;
-    var $nextSlide = (this.imageSlideHolders[slideId]);
+    var $nextSlide = this.imageSlideHolders[slideId];
     if (!this.dragging) {
       this.prepareNextSlideForAnimation($nextSlide, nextSlideDirection);
     }
     setTimeout(function() {
       $nextSlide.removeClass('h5p-image-slider-no-transition');
-      $prevSlide.removeClass('h5p-image-slider-current')
+      $prevSlide
+        .removeClass('h5p-image-slider-current')
         .addClass('h5p-image-slider-removing')
         .removeClass('h5p-image-slider-' + nextSlideDirection)
         .addClass('h5p-image-slider-' + prevSlideDirection)
         .attr('aria-hidden', true);
-      $nextSlide.removeClass('h5p-image-slider-past')
+      $nextSlide
+        .removeClass('h5p-image-slider-past')
         .removeClass('h5p-image-slider-future')
         .addClass('h5p-image-slider-current')
         .removeAttr('aria-hidden');
@@ -349,12 +388,12 @@ H5P.ImageSliderEAD = (function ($) {
 
     // this.updateNavButtons();
     this.updateProgressBar();
-    
+
     if (this.timeoutHandle && this.options.sliderConfig.rotate) {
       clearTimeout(this.timeoutHandle);
       this.timeoutHandle = 0;
       this.rotate();
-    };
+    }
     return true;
   };
 
@@ -365,7 +404,8 @@ H5P.ImageSliderEAD = (function ($) {
    * @param {String} direction prev or next
    */
   C.prototype.prepareNextSlideForAnimation = function($nextSlide, direction) {
-    $nextSlide.removeClass('h5p-image-slider-past')
+    $nextSlide
+      .removeClass('h5p-image-slider-past')
       .removeClass('h5p-image-slider-future')
       .addClass('h5p-image-slider-no-transition')
       .addClass('h5p-image-slider-' + direction);
@@ -377,20 +417,21 @@ H5P.ImageSliderEAD = (function ($) {
   C.prototype.updateNavButtons = function() {
     if (this.currentSlideId >= this.imageSlides.length - 1) {
       this.$rightButton.hide();
-    }
-    else {
+    } else {
       this.$rightButton.show();
     }
     if (this.currentSlideId <= 0) {
       this.$leftButton.hide();
-    }
-    else {
+    } else {
       this.$leftButton.show();
     }
     var heightInPercent = 100;
-    var fullScreenOn = this.$container.hasClass('h5p-fullscreen') || this.$container.hasClass('h5p-semi-fullscreen');
+    var fullScreenOn =
+      this.$container.hasClass('h5p-fullscreen') ||
+      this.$container.hasClass('h5p-semi-fullscreen');
     if (!fullScreenOn) {
-      heightInPercent = this.$currentSlide.height() / this.$slides.height() * 100;
+      heightInPercent =
+        (this.$currentSlide.height() / this.$slides.height()) * 100;
     }
     this.$leftButton.css('height', heightInPercent + '%');
     this.$rightButton.css('height', heightInPercent + '%');
@@ -402,17 +443,26 @@ H5P.ImageSliderEAD = (function ($) {
    * Highlights the element in the progress bar corresponding to the current slide
    * and reposition the progress bar
    */
-  C.prototype.updateProgressBar = function () {
-    $('.h5p-image-slider-current-progress-element', this.$container).removeClass('h5p-image-slider-current-progress-element');
-    $('.h5p-image-slider-progress-element', this.$container).eq(this.currentSlideId).addClass('h5p-image-slider-current-progress-element');
-    var heightInPercent = this.$currentSlide.height() / this.$slides.height() * 100;
-    $('.h5p-image-slider-progress', this.$container).css('top', heightInPercent + '%');
+  C.prototype.updateProgressBar = function() {
+    $(
+      '.h5p-image-slider-current-progress-element',
+      this.$container
+    ).removeClass('h5p-image-slider-current-progress-element');
+    $('.h5p-image-slider-progress-element', this.$container)
+      .eq(this.currentSlideId)
+      .addClass('h5p-image-slider-current-progress-element');
+    var heightInPercent =
+      (this.$currentSlide.height() / this.$slides.height()) * 100;
+    $('.h5p-image-slider-progress', this.$container).css(
+      'top',
+      heightInPercent + '%'
+    );
   };
 
   /**
    * Make a slide draggable
    */
-  C.prototype.initDragging = function () {
+  C.prototype.initDragging = function() {
     var self = this;
     this.$slidesHolder.on('touchstart', function(event) {
       self.dragging = true;
@@ -439,8 +489,7 @@ H5P.ImageSliderEAD = (function ($) {
         if (d.getTime() - self.dragStartTime < 300) {
           if (self.isRightButton(event.target)) {
             self.gotoSlide(self.currentSlideId + 1);
-          }
-          else {
+          } else {
             self.gotoSlide(self.currentSlideId - 1);
           }
         }
@@ -459,14 +508,14 @@ H5P.ImageSliderEAD = (function ($) {
    *
    * @returns {undefined} Nothing.
    */
-  C.prototype.initKeyEvents = function () {
+  C.prototype.initKeyEvents = function() {
     if (this.keydown !== undefined) {
       return;
     }
 
     var self = this;
 
-    this.keydown = function (event) {
+    this.keydown = function(event) {
       // Left
       if (event.which === 37) {
         self.gotoSlide(self.currentSlideId - 1);
@@ -486,11 +535,13 @@ H5P.ImageSliderEAD = (function ($) {
    * @param {DOMElement} domElement the element to be checked
    * @return {Boolean} whether or not the element is a button
    */
-  C.prototype.isButton = function (domElement) {
+  C.prototype.isButton = function(domElement) {
     var $target = $(domElement);
-    return $target.hasClass('h5p-image-slider-button-background')
-      || $target.hasClass('h5p-image-slider-button-text')
-      || $target.hasClass('h5p-image-slider-button');
+    return (
+      $target.hasClass('h5p-image-slider-button-background') ||
+      $target.hasClass('h5p-image-slider-button-text') ||
+      $target.hasClass('h5p-image-slider-button')
+    );
   };
 
   /**
@@ -499,10 +550,12 @@ H5P.ImageSliderEAD = (function ($) {
    * @param {DOMElement} domElement the DOM element to be checked
    * @return {Boolean} Whether or not the element is the right button
    */
-  C.prototype.isRightButton = function (domElement) {
+  C.prototype.isRightButton = function(domElement) {
     var $target = $(domElement);
-    return $target.hasClass('h5p-image-slider-right-button')
-      || $target.parent().hasClass('h5p-image-slider-right-button');
+    return (
+      $target.hasClass('h5p-image-slider-right-button') ||
+      $target.parent().hasClass('h5p-image-slider-right-button')
+    );
   };
 
   /**
@@ -510,23 +563,34 @@ H5P.ImageSliderEAD = (function ($) {
    */
   C.prototype.dragActionUpdate = function(x) {
     this.dragXMovement = x - this.dragStartX;
-    this.$currentSlide.css('transform', 'translateX(' + this.dragXMovement + 'px)');
+    this.$currentSlide.css(
+      'transform',
+      'translateX(' + this.dragXMovement + 'px)'
+    );
     if (this.currentSlideId > 0) {
-      var $prevSlide = this.imageSlideHolders[this.currentSlideId - 1].addClass('h5p-image-slider-dragging');
+      var $prevSlide = this.imageSlideHolders[this.currentSlideId - 1].addClass(
+        'h5p-image-slider-dragging'
+      );
       if (this.dragXMovement < 0) {
         $prevSlide.css('transform', 'translateX(-100.001%)');
-      }
-      else {
-        $prevSlide.css('transform', 'translateX(' + (this.dragXMovement - $prevSlide.width()) + 'px)');
+      } else {
+        $prevSlide.css(
+          'transform',
+          'translateX(' + (this.dragXMovement - $prevSlide.width()) + 'px)'
+        );
       }
     }
     if (this.currentSlideId < this.imageSlideHolders.length - 1) {
-      var $nextSlide = this.imageSlideHolders[this.currentSlideId + 1].addClass('h5p-image-slider-dragging');
+      var $nextSlide = this.imageSlideHolders[this.currentSlideId + 1].addClass(
+        'h5p-image-slider-dragging'
+      );
       if (this.dragXMovement > 0) {
         $nextSlide.css('transform', 'translateX(100.001%)');
-      }
-      else {
-        $nextSlide.css('transform', 'translateX(' +(this.dragXMovement + $nextSlide.width()) + 'px)');
+      } else {
+        $nextSlide.css(
+          'transform',
+          'translateX(' + (this.dragXMovement + $nextSlide.width()) + 'px)'
+        );
       }
     }
   };
@@ -537,24 +601,23 @@ H5P.ImageSliderEAD = (function ($) {
    * Will either go back to the current slide or finish the transition to the next slide
    */
   C.prototype.finishDragAction = function() {
-    $('.h5p-image-slider-dragging', this.$container).removeClass('h5p-image-slider-dragging').each(function() {
-      this.style.removeProperty('transform');
-    });
+    $('.h5p-image-slider-dragging', this.$container)
+      .removeClass('h5p-image-slider-dragging')
+      .each(function() {
+        this.style.removeProperty('transform');
+      });
     this.dragStartX = undefined;
     var xInPercent = this.dragXMovement / this.$currentSlide.width();
     if (xInPercent < -0.3) {
       if (this.currentSlideId < this.imageSlideHolders.length - 1) {
         this.gotoSlide(this.currentSlideId + 1);
-      }
-      else {
+      } else {
         this.$currentSlide.css('transform', 'translateX(0%)');
       }
-    }
-    else if (xInPercent > 0.3) {
+    } else if (xInPercent > 0.3) {
       if (this.currentSlideId > 0) {
         this.gotoSlide(this.currentSlideId - 1);
-      }
-      else {
+      } else {
         this.$currentSlide.css('transform', 'translateX(0%)');
       }
     }
@@ -575,17 +638,19 @@ H5P.ImageSliderEAD = (function ($) {
         self.gotoSlide(0);
       }
       clearTimeout(timeoutHandle);
-    };
-    
-    this.timeoutHandle = setTimeout(function() {self.rotate()}, self.options.sliderConfig.rotationTime);
+    }
+
+    this.timeoutHandle = setTimeout(function() {
+      self.rotate();
+    }, self.options.sliderConfig.rotationTime);
   };
 
   /**
    * Start rotation
    */
   C.prototype.startRotation = function() {
-    if ((!this.timeoutHandle) && this.options.sliderConfig.rotate) {
-      this.rotate()
+    if (!this.timeoutHandle && this.options.sliderConfig.rotate) {
+      this.rotate();
     }
   };
 
@@ -596,11 +661,11 @@ H5P.ImageSliderEAD = (function ($) {
    * @param  {H5P.jQuery} $element The "button" element
    * @param  {Function} callback
    */
-  C.handleButtonClick = function ($element, callback) {
-    $element.click(function (event) {
+  C.handleButtonClick = function($element, callback) {
+    $element.click(function(event) {
       callback.call(this, event);
     });
-    $element.keydown(function (event) {
+    $element.keydown(function(event) {
       // 32 - space, 13 - enter
       if ([32, 13].indexOf(event.which) !== -1) {
         event.preventDefault();
